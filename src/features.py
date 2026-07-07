@@ -38,6 +38,4 @@ def feature_engineering(df):
 
     df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
 
-    print(df["Churn Value"].value_counts())
-    print(df.dtypes)
     return df
