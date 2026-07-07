@@ -1,20 +1,21 @@
 from src.data_loader import load_data
 from src.preprocessing import preprocess
+from src.features import feature_engineering
 
 
 def main():
-    # بارگذاری داده
+
     df = load_data()
 
-    # پیش پردازش
     df = preprocess(df)
 
-    print("\nPreprocessing finished!")
+    df = feature_engineering(df)
+
+    print("\nFeature Engineering finished!")
     print(df.head())
 
-    # ذخیره نسخه دوم دیتاست
     df.to_excel(
-        "data/v2/Telco_customer_churn.xlsx",
+        "data/v3/Telco_customer_churn.xlsx",
         index=False
     )
 
