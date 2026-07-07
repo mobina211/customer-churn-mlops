@@ -1,6 +1,7 @@
 from src.data_loader import load_data
 from src.preprocessing import preprocess
 from src.features import feature_engineering
+from src.train import train_models
 
 
 def main():
@@ -11,13 +12,11 @@ def main():
 
     df = feature_engineering(df)
 
-    print("\nFeature Engineering finished!")
-    print(df.head())
+    models, X_test, y_test = train_models(df)
 
-    df.to_excel(
-        "data/v3/Telco_customer_churn.xlsx",
-        index=False
-    )
+    print("\nTraining Finished!")
+
+    print(models.keys())
 
 
 if __name__ == "__main__":

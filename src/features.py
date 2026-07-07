@@ -13,7 +13,9 @@ def feature_engineering(df):
         "Country",
         "State",
         "City",
-        "Zip Code"
+        "Zip Code",
+        "Churn Score",
+        "CLTV"
     ]
 
     df = df.drop(columns=columns_to_drop, errors="ignore")
@@ -25,7 +27,9 @@ def feature_engineering(df):
     df = pd.get_dummies(df, columns=categorical_columns, drop_first=True)
 
     # تبدیل True/False به 0 و 1
-    df = df.astype(int)
+    # تبدیل فقط ستون‌های بولی به عدد
+    bool_cols = df.select_dtypes(include="bool").columns
+    df[bool_cols] = df[bool_cols].astype(int)
 
     # نرمال‌سازی ستون‌های عددی (به جز ستون هدف)
     scaler = MinMaxScaler()
@@ -34,4 +38,6 @@ def feature_engineering(df):
 
     df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
 
+    print(df["Churn Value"].value_counts())
+    print(df.dtypes)
     return df

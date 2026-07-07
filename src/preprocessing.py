@@ -2,17 +2,22 @@ import pandas as pd
 
 
 def preprocess(df):
-    # حذف ستون شناسه مشتری
+
+    # حذف شناسه مشتری
     if "CustomerID" in df.columns:
         df = df.drop(columns=["CustomerID"])
 
-    # تبدیل TotalCharges به عدد
+    # حذف ستون Churn Reason قبل از حذف Missing Values
+    if "Churn Reason" in df.columns:
+        df = df.drop(columns=["Churn Reason"])
+
+    # تبدیل Total Charges به عدد
     df["Total Charges"] = pd.to_numeric(
         df["Total Charges"],
         errors="coerce"
     )
 
-    # حذف مقادیر گمشده
-    df = df.dropna()
+    # فقط ردیف‌هایی را حذف کن که Total Charges ندارند
+    df = df.dropna(subset=["Total Charges"])
 
     return df
