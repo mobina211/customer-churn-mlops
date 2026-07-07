@@ -1,35 +1,112 @@
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import (
+    train_test_split,
+    StratifiedKFold,
+    cross_val_score
+)
+
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
 from catboost import CatBoostClassifier
 
 
+SEED = 42
+
+
+def get_models():
+    return {
+        "Logistic Regression": LogisticRegression(
+            max_iter=1000,
+            random_state=SEED
+        ),
+
+        "Random Forest": RandomForestClassifier(
+            n_estimators=200,
+            random_state=SEED
+        ),
+
+        "XGBoost": XGBClassifier(
+            random_state=SEED,
+            eval_metric="logloss"
+        ),
+
+        "CatBoost": CatBoostClassifier(
+    iterations=100,
+    learning_rate=0.1,
+    depth=6,
+    verbose=0,
+    random_state=SEED
+)
+    }
+
+
 def train_models(df):
 
-    X = df.drop(columns=["Churn Value"])
+    # Target
     y = df["Churn Value"]
 
-    X_train, X_test, y_train, y_test = train_test_split(
+    # Features
+    X = df.drop(columns=["Churn Value"])
+
+    # -------------------------------
+    # Train / Validation / Test Split
+    # -------------------------------
+
+    X_train_val, X_test, y_train_val, y_test = train_test_split(
         X,
         y,
-        test_size=0.2,
-        random_state=42,
+        test_size=0.20,
+        random_state=SEED,
         stratify=y
     )
 
-    models = {
-        "Logistic Regression": LogisticRegression(max_iter=1000),
-        "Random Forest": RandomForestClassifier(random_state=42),
-        "XGBoost": XGBClassifier(random_state=42),
-        "CatBoost": CatBoostClassifier(verbose=0, random_state=42)
-    }
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X_train_val,
+        y_train_val,
+        test_size=0.20,
+        random_state=SEED,
+        stratify=y_train_val
+    )
+
+    cv = StratifiedKFold(
+        n_splits=3,
+        shuffle=True,
+        random_state=SEED
+    )
+
+    models = get_models()
 
     trained_models = {}
 
+    cv_scores = {}
+
+    print("\n========== TRAINING ==========\n")
+
     for name, model in models.items():
-        print(f"Training {name} ...")
+
+        print(f"Training {name}")
+
+        scores = cross_val_score(
+            model,
+            X_train,
+            y_train,
+            cv=cv,
+            scoring="accuracy"
+        )
+
+        cv_scores[name] = scores.mean()
+
         model.fit(X_train, y_train)
+
         trained_models[name] = model
 
-    return trained_models, X_test, y_test
+        print(f"CV Accuracy = {scores.mean():.4f}")
+
+    return (
+        trained_models,
+        cv_scores,
+        X_valid,
+        y_valid,
+        X_test,
+        y_test
+    )

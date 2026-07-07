@@ -1,6 +1,13 @@
 venv/
 pycache/
 *.pyc
+
 mlruns/
+mlflow.db
+
+models/
+
+catboost_info/
+
 .env
 .ipynb_checkpoints/
