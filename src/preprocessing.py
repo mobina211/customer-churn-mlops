@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 
 
 def preprocess(df):
@@ -19,5 +20,16 @@ def preprocess(df):
 
     # فقط ردیف‌هایی را حذف کن که Total Charges ندارند
     df = df.dropna(subset=["Total Charges"])
+
+    # Save preprocessed dataset (v2)
+
+    os.makedirs("data/v2", exist_ok=True)
+
+    df.to_excel(
+    "data/v2/Telco_customer_churn.xlsx",
+    index=False
+     )
+
+    print("Preprocessed dataset saved to data/v2/")
 
     return df

@@ -1,3 +1,4 @@
+from src.preprocessing import preprocess
 from src.save_model import save_best_model
 from src.data_loader import load_data
 from src.features import feature_engineering
@@ -9,7 +10,7 @@ from src.mlflow_utils import log_models
 def main():
 
     df = load_data()
-
+    df = preprocess(df)
     df = feature_engineering(df)
 
     (
@@ -36,6 +37,8 @@ def main():
         results,
         cv_scores
     )
+
+    print(df.columns.tolist())
 
 
 if __name__ == "__main__":

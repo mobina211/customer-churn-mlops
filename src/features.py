@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 from sklearn.preprocessing import MinMaxScaler
 
 
@@ -15,7 +16,10 @@ def feature_engineering(df):
         "City",
         "Zip Code",
         "Churn Score",
-        "CLTV"
+        "CLTV",
+        "Count", 
+        "Latitude",
+        "Longitude"
     ]
 
     df = df.drop(columns=columns_to_drop, errors="ignore")
@@ -37,5 +41,16 @@ def feature_engineering(df):
     numeric_cols = df.columns.drop("Churn Value")
 
     df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
+
+    
+
+    os.makedirs("data/v3", exist_ok=True)
+
+    df.to_excel(
+    "data/v3/Telco_customer_churn.xlsx",
+    index=False
+    )
+
+    print("Feature engineered dataset saved to data/v3/")
 
     return df
