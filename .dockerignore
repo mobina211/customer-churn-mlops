@@ -1,0 +1,9 @@
+venv/
+.git/
+.gitignore
+mlruns/
+mlflow.db
+pycache/
+*.pyc
+.ipynb_checkpoints/
+catboost_info/
