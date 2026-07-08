@@ -1,6 +1,5 @@
 import pandas as pd
 import os
-from sklearn.preprocessing import MinMaxScaler
 
 
 def feature_engineering(df):
@@ -35,14 +34,6 @@ def feature_engineering(df):
     bool_cols = df.select_dtypes(include="bool").columns
     df[bool_cols] = df[bool_cols].astype(int)
 
-    # نرمال‌سازی ستون‌های عددی (به جز ستون هدف)
-    scaler = MinMaxScaler()
-
-    numeric_cols = df.columns.drop("Churn Value")
-
-    df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
-
-    
 
     os.makedirs("data/v3", exist_ok=True)
 

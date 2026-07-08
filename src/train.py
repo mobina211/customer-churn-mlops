@@ -4,6 +4,7 @@ from sklearn.model_selection import (
     cross_val_score
 )
 
+from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
@@ -31,12 +32,12 @@ def get_models():
         ),
 
         "CatBoost": CatBoostClassifier(
-    iterations=100,
-    learning_rate=0.1,
-    depth=6,
-    verbose=0,
-    random_state=SEED
-)
+            iterations=100,
+            learning_rate=0.1,
+            depth=6,
+            verbose=0,
+            random_state=SEED
+        )
     }
 
 
@@ -48,9 +49,7 @@ def train_models(df):
     # Features
     X = df.drop(columns=["Churn Value"])
 
-    # -------------------------------
     # Train / Validation / Test Split
-    # -------------------------------
 
     X_train_val, X_test, y_train_val, y_test = train_test_split(
         X,
@@ -67,6 +66,18 @@ def train_models(df):
         random_state=SEED,
         stratify=y_train_val
     )
+
+    # Scaling (فقط روی Train)
+
+    scaler = MinMaxScaler()
+
+    X_train = scaler.fit_transform(X_train)
+
+    X_valid = scaler.transform(X_valid)
+
+    X_test = scaler.transform(X_test)
+
+    # Cross Validation
 
     cv = StratifiedKFold(
         n_splits=3,
