@@ -16,6 +16,7 @@ def main():
     (
         models,
         cv_scores,
+        scaler,
         X_valid,
         y_valid,
         X_test,
@@ -32,7 +33,8 @@ def main():
 
     best_model = save_best_model(
         models,
-        validation_results
+        validation_results,
+        scaler
     )
 
     print("\n========== FINAL TEST ==========\n")

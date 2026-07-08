@@ -116,6 +116,7 @@ def train_models(df):
     return (
         trained_models,
         cv_scores,
+        scaler,
         X_valid,
         y_valid,
         X_test,
