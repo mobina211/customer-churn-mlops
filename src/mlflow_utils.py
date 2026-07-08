@@ -6,7 +6,7 @@ def log_models(models, results, cv_scores):
 
     mlflow.set_experiment("Customer Churn Prediction")
 
-    DATASET_VERSION = "v1"
+    DATASET_VERSION = "v3"
     RANDOM_SEED = 42
 
     for model_name, model in models.items():
