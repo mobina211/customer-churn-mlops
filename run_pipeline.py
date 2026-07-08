@@ -22,19 +22,30 @@ def main():
         y_test
     ) = train_models(df)
 
-    results = evaluate_models(
+    print("\n========== VALIDATION ==========\n")
+
+    validation_results = evaluate_models(
+        models,
+        X_valid,
+        y_valid
+    )
+
+    best_model = save_best_model(
+        models,
+        validation_results
+    )
+
+    print("\n========== FINAL TEST ==========\n")
+
+    test_results = evaluate_models(
         models,
         X_test,
         y_test
     )
-    best_model = save_best_model(
-    models,
-    results
-)
 
     log_models(
         models,
-        results,
+        test_results,
         cv_scores
     )
 
